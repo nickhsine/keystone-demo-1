@@ -18,43 +18,41 @@ export default function NetworkBPromotions() {
     )
 }
 
-interface PromotionsList {
-    "promotions": Promotions[]
+interface Promotions {
+    "promotions": Promotion[]
 }
 
-interface Promotions {
+interface Promotion {
     "total-categories": number,
     "partner-name": string,
-    "categories-list": PromotionCategories[]
-}[]
+    "categories-list": PromotionCategory[]
+}
 
-interface PromotionCategories {
+interface PromotionCategory {
     "category-id": number,
     "category-name": string,
     "featured": string,
     "sort-order": number,
     "subcategory": string
-}[]
+}
 
 function ApiDisplay() {
-    const { data: responsData, error, isLoading } = useSWR<PromotionsList[] | null>(promsUrl, fetcher)
+    const { data: responsData, error, isLoading } = useSWR<Promotion[] | null>(promsUrl, fetcher)
     if (error) return <div>failed to load</div>
     if (isLoading) return <div>loading...</div>
-    let setPromotions: Promotions[] | undefined;
+    if (!responsData) {
+        return  <div>failed to load</div>;
+    }
 
     // render data
-    let parsedData = responsData?.map(set => 
-        {setPromotions = set['promotions']},
+    let parsedData = responsData.map(set => 
         <ul>
-            {setPromotions.map((partner: Promotions, i: number) =>
-                <li key={i}>
-                    {partner['partner-name']}
+            {set["categories-list"].map((partner: PromotionCategory, i: number) =>
+                <li key={partner['category-id']}>
+                    {partner['category-name']}
                     <ul>
-                        {/* {
-                            set['categories-list'].map((cat:PromotionCategories) =>
-                                <li>{cat['category-name']}</li>
-                            )
-                        } */}
+                        <li>{partner['category-id']}</li>
+                        <li>{partner.featured}</li>
                     </ul>
                 </li>
             )}
@@ -62,10 +60,7 @@ function ApiDisplay() {
     );
     return (
             <>
-                <div>hello, {parsedData ? [0]['total-categories'] : "undefined"}!</div>
-                <ul>
-                    {parsedData}
-                </ul>
+                {parsedData}
             </>
         )
 }
