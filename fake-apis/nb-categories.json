@@ -1,0 +1,141 @@
+ [
+     {
+         "total-categories": 19,
+         "partner-name": "Carma",
+         "categories-list": [
+             {
+                 "category-id": 5,
+                 "category-name": "Travel",
+                 "featured": "Yes",
+                 "sort-order": 3,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 6,
+                 "category-name": "Fashion",
+                 "featured": "Yes",
+                 "sort-order": 4,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 7,
+                 "category-name": "Mobile Phones",
+                 "featured": "Yes",
+                 "sort-order": 5,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 8,
+                 "category-name": "Broadband",
+                 "featured": "Yes",
+                 "sort-order": 6,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 9,
+                 "category-name": "Health & Beauty",
+                 "featured": "Yes",
+                 "sort-order": 7,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 10,
+                 "category-name": "Entertainment",
+                 "featured": "Yes",
+                 "sort-order": 8,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 11,
+                 "category-name": "Home & DIY",
+                 "featured": "Yes",
+                 "sort-order": 9,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 12,
+                 "category-name": "Insurance",
+                 "featured": "Yes",
+                 "sort-order": 10,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 13,
+                 "category-name": "Electronics",
+                 "featured": "Yes",
+                 "sort-order": 2,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 14,
+                 "category-name": "Cars",
+                 "featured": "Yes",
+                 "sort-order": 11,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 15,
+                 "category-name": "Finance",
+                 "featured": "No",
+                 "sort-order": 12,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 16,
+                 "category-name": "Food & Drink",
+                 "featured": "No",
+                 "sort-order": 13,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 17,
+                 "category-name": "Gifts",
+                 "featured": "No",
+                 "sort-order": 14,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 20,
+                 "category-name": "Office & Business",
+                 "featured": "No",
+                 "sort-order": 15,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 21,
+                 "category-name": "Pets",
+                 "featured": "No",
+                 "sort-order": 16,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 23,
+                 "category-name": "Sports & Fitness",
+                 "featured": "No",
+                 "sort-order": 17,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 25,
+                 "category-name": "Toys & Games",
+                 "featured": "No",
+                 "sort-order": 18,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 27,
+                 "category-name": "Wedding",
+                 "featured": "No",
+                 "sort-order": 19,
+                 "subcategory": null
+             },
+             {
+                 "category-id": 33,
+                 "category-name": "Gift Cards",
+                 "featured": "Yes",
+                 "sort-order": 0,
+                 "subcategory": null
+             }
+         ]
+     }
+ ]
