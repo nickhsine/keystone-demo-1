@@ -1,27 +1,21 @@
 import { PageContainer } from '@keystone-6/core/admin-ui/components';
 import { Heading } from '@keystone-ui/core';
 import useSWR from 'swr'
-import { AppResponse, AppResults, AppOffer } from '../interfaces/app-offers';
-import { Promotion, PromotionData, PromoCategory, PromoSplitDetails } from '../interfaces/nb-promotions';
+import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
+import { ApiArray } from '../interfaces/reconcilliation';
 const bubbleOffersUrl = 'http://localhost:3030/app-offers';
 const networkBOffers = 'http://localhost:3030/promotions';
 
 const fetcher = (url:string) => fetch(url).then(r => r.json())
-let dataArr: DataArray[] = []
-
-interface DataArray {
-    Name: string,
-    Percentage: string,
-    Expires: string
-}
+const dataArr: ApiArray[] = []
 
 export default function BubblePromotions() {
     return (
         <>
             <PageContainer header={<Heading type="h3">Bubble App</Heading>}>
                 <h1>Promotions</h1>
-                <ApiTable tableProps={dataArr}></ApiTable>
+                <ApiDisplay></ApiDisplay>
             </PageContainer>
         </>
     )
@@ -36,31 +30,28 @@ function ApiDisplay() {
     if (!bubbleData) {
         return (<div>failed to load</div>)
     }
-    // render data
-    const processBubble = bubbleData.response.results.map((offer, i: number) =>
-        dataArr.push({"Name": offer.name_text, "Percentage": offer.discount_percentage_number?.toString(), "Expires": offer.expiry_date_date}),
-    )
     if (nBError) return (<div>failed to load</div>)
     if (nBIsLoading) return (<div>loading...</div>)
     if (!nbData) {
         return (<div>failed to load</div>)
     }
-    // render data
-    const processNetworkB = nbData.map((set, j) => 
+    console.log(bubbleData)
+    bubbleData.response.results.map((offer, i: number) =>
+        dataArr.push({"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toString()+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble", Match: null }),
+    )
+    
+    nbData.map((set, j) => 
         {
             set["promo-data"].map((promo, i: number) => {
                 let promoExpiry: string = promo['expiry-date']
                 promo['splits-details'].map((split) => 
-                dataArr.push({"Name": promo.name, "Percentage": split['gross-commission'], "Expires": promoExpiry}),
+                dataArr.push({"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B", Match:null }),
                 )
             })
         }
     )
-        console.log(dataArr);
-    return (
-            <>
-                <p>Test</p>
-                {/* {dataArr} */}
-            </>
-        )
+
+    // console.log(dataArr);
+
+    return <ApiTable tableProps={dataArr}></ApiTable>
 }
