@@ -8,13 +8,12 @@ const bubbleOffersUrl = 'http://localhost:3030/app-offers';
 const networkBOffers = 'http://localhost:3030/promotions';
 
 const fetcher = (url:string) => fetch(url).then(r => r.json())
-const dataArr: ApiArray[] = []
+
 
 export default function BubblePromotions() {
     return (
         <>
-            <PageContainer header={<Heading type="h3">Bubble App</Heading>}>
-                <h1>Promotions</h1>
+            <PageContainer header={<Heading type="h3">API Reconcilliation</Heading>}>
                 <ApiDisplay></ApiDisplay>
             </PageContainer>
         </>
@@ -22,24 +21,34 @@ export default function BubblePromotions() {
 }
 
 function ApiDisplay() {
-    const { data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading } = useSWR<AppResponse | null>(bubbleOffersUrl, fetcher)
-    const { data: nbData, error: nBError, isLoading: nBIsLoading } = useSWR<Promotion[] | null>(networkBOffers, fetcher)
 
-    if (bubbleError) return (<div>failed to load</div>)
-    if (bubbleIsLoading) return (<div>loading...</div>)
-    if (!bubbleData) {
-        return (<div>failed to load</div>)
+    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl)
+    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffers)
+
+    const dataArr = getArrData(bubbleData, nbData)
+
+
+    return (
+        <>
+        <ErrorOrLoading
+            error = {bubbleError || nBError}
+            isLoading = {bubbleIsLoading || nBIsLoading}
+            isResponseData = {bubbleData || nbData}
+        />
+        {dataArr && <ApiTable tableProps={dataArr}></ApiTable>}
+        </>
+    )
+}
+
+const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promotion[] | null | undefined) => {
+    if (!bubbleData || !nbData) {
+        return null;
     }
-    if (nBError) return (<div>failed to load</div>)
-    if (nBIsLoading) return (<div>loading...</div>)
-    if (!nbData) {
-        return (<div>failed to load</div>)
-    }
-    console.log(bubbleData)
+    const dataArr: ApiArray[] = []
+
     bubbleData.response.results.map((offer, i: number) =>
         dataArr.push({"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toString()+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble", Match: null }),
     )
-    
     nbData.map((set, j) => 
         {
             set["promo-data"].map((promo, i: number) => {
@@ -50,8 +59,30 @@ function ApiDisplay() {
             })
         }
     )
+    return (
+        dataArr
+    );
 
-    // console.log(dataArr);
+}
+const callAPI = <T,>(target: string) => {
+    const { data, error, isLoading} = useSWR<T>(target, fetcher)
+    
+    return (
+        {data, error, isLoading}
+    )
+}
 
-    return <ApiTable tableProps={dataArr}></ApiTable>
+const ErrorOrLoading = (error: any, isLoading: boolean, isResponseData: boolean) => {
+    if (error[0] != undefined) return (
+        <div>Error</div>
+    )
+    if (isLoading == true) return (
+        <div>Loading...</div>
+    )
+    if (isResponseData == false) return (
+        <div>Failed to load</div>
+    )
+    return (
+        null
+    )
 }
