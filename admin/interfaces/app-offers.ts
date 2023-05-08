@@ -9,4 +9,5 @@ export interface AppResults {
 export interface AppOffer {
     name_text: string,
     discount_percentage_number: number,
+    expiry_date_date: string
 }
