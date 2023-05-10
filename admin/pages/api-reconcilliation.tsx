@@ -1,9 +1,8 @@
 import { PageContainer } from '@keystone-6/core/admin-ui/components';
 import { Heading } from '@keystone-ui/core';
 import useSWR from 'swr'
-import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps } from '../interfaces/reconcilliation';
+import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps, ApiArray, ApiArrayItem } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
-import { ApiArray } from '../interfaces/reconcilliation';
 const bubbleOffersUrl = 'http://localhost:3030/app-offers';
 const networkBOffers = 'http://localhost:3030/promotions';
 
@@ -46,20 +45,31 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
     }
     const dataArr: ApiArray[] = []
 
-    bubbleData.response.results.map((offer, i: number) =>
-        dataArr.push({"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toString()+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble", Match: null }),
+    bubbleData.response.results.map((offer, i: number) => 
+        dataArr.push({Id: offer.nimda_id_number, items: [{"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toFixed(2)+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble", Match: null} ]}),
     )
     nbData.map((set, j) => 
-        {
-            set["promo-data"].map((promo, i: number) => {
-                let promoExpiry: string = promo['expiry-date']
-                promo['splits-details'].map((split) => 
-                dataArr.push({"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B", Match:null }),
-                )
-            })
-        }
+        set["promo-data"].map((promo, i: number) => {
+            let promoExpiry: string = promo['expiry-date']
+            dataArr.forEach((entry, i) => {
+                if(promo['promo-id'] == entry.Id){
+                    // console.log("matches: "+promo['promo-id']+" = "+entry.Id)
+                    promo['splits-details'].map((split) => 
+                        dataArr[i].items.splice(i, 0, {"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B", Match:null }),
+                    )
+                    
+                } 
+                if(promo['promo-id'] == entry.Id) {
+                    // console.log("doesnt match: "+promo['promo-id']+" != "+entry.Id)
+                    promo['splits-details'].map((split) => 
+                        dataArr.push({"Id": promo['promo-id'], items: [{"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B", Match:null}] }),
+                    )
+                }
+                })
+        })
     )
     return (
+        // console.log(dataArr)
         dataArr
     );
 

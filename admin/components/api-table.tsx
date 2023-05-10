@@ -67,6 +67,12 @@ const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
 
   const columnsDef: ColumnDef<ApiArray>[] = [
     {
+      accessorKey: 'Id',
+        header: () => 'Id', 
+        cell: info => info.getValue(),
+        footer: info => info.column.id,
+    },
+    {
       accessorKey: 'Name',
         header: () => 'Name', 
         cell: info => info.getValue(),
