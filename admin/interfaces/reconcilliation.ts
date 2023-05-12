@@ -52,7 +52,6 @@ export interface ApiArrayItem {
     Discount: string | null,
     Expires: string | null,
     Source: string | null
-    Match: boolean| null
 }[]
 
 export interface TableProps {
