@@ -1,6 +1,7 @@
   
 import { useState } from 'react'
 import { ApiArray, ApiArrayItem, TableProps } from '../interfaces/reconcilliation'
+import styles from './api-table.module.scss'
 
 const TableHeaders = (tableHeaders: TableProps) => {
   const topKeys = tableHeaders.tableProps.keys()
@@ -23,12 +24,15 @@ const TableHeaders = (tableHeaders: TableProps) => {
 }
 
 const TableBody = (tableHeaders: TableProps) => {
-
     const tBody = (
         <tbody>
             {
-                tableHeaders.tableProps.map(row => 
+                tableHeaders.tableProps.map(row => {
+                  // console.log(row);
+                  return (
                     <TRow {...row}></TRow>
+                  )
+                  }
                 )
             }
         </tbody>
@@ -39,34 +43,41 @@ const TableBody = (tableHeaders: TableProps) => {
 }
 
 const TRow = (tableRow: ApiArray) => {
-    // const [discounts, setDiscounts] = useState<Array<string | null>>([])
-    // discounts.length = 0
+    const isDiscountMatchFunc = (el: ApiArrayItem, index: number, arr: ApiArrayItem[]) => {
+      if (index == 0) {
+        return true;
+      } else {
+        return (el.Discount == arr[index-1].Discount)
+      }
+    }
+    const isDiscountMatch = tableRow.items.every(isDiscountMatchFunc)
+
     const tableRowOutput = 
         <>
-        {
-        tableRow.items.map((item, i) =>
-                // setDiscounts(discounts => [...discounts, item.Discount]),
-            <tr key={i}>
-                {i == 0?<td rowSpan={2}>{tableRow.Id}</td> : null}
-                <td>{item.Name}</td>
-                <td>{item.Discount}</td>
-                <td>{item.Expires}</td>
-                <td>{item.Source}</td>
-                {/* <td>{discounts.every(item.Discount === (item[0].Discount))}</td> */}
-            </tr>
-        )
-}
-    </>
+          {
+            tableRow.items.map((item, i) => {
+              return (
+                <tr className={isDiscountMatch? styles.matched: styles.unmatched} key={i}>
+                    {i == 0?<td rowSpan={tableRow.items.length}>{tableRow.Id}</td> : null}
+                    <td className={styles.textLeft}>{item.Name}</td>
+                    <td>{item.Discount}</td>
+                    <td>{item.Expires}</td>
+                    <td>{item.Source}</td>
+                    <td>{isDiscountMatch? "✔️": "❌"}</td>
+                </tr>
+              )
+            })
+          }
+      </>
     return (
-        // console.log(discounts),
         tableRowOutput
     )
 }
 
 export default function ApiTable(tableProps: TableProps) {
+  // console.log(tableProps.tableProps)
   return (
-    // console.log(tableProps.tableProps),
-    <table>
+    <table className={styles.table}>
       <TableHeaders tableProps={tableProps.tableProps}></TableHeaders>
       <TableBody tableProps={tableProps.tableProps}></TableBody>
     </table>

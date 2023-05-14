@@ -25,7 +25,7 @@ function ApiDisplay() {
     const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl)
     const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffers)
 
-    const dataArr = getArrData(bubbleData, nbData)
+    const combinedArray = getArrData(bubbleData, nbData)
 
 
     return (
@@ -35,7 +35,8 @@ function ApiDisplay() {
             isLoading = {bubbleIsLoading || nBIsLoading}
             isResponseData = {bubbleData || nbData}
         />
-        {dataArr && <ApiTable tableProps={dataArr}></ApiTable>}
+        {combinedArray && <ApiTable tableProps={combinedArray.dataArr}></ApiTable>}
+        {/* {combinedArray && <ApiTable tableProps={combinedArray.singleArr}></ApiTable>} */}
         </>
     )
 }
@@ -45,6 +46,7 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
         return null;
     }
     const dataArr: ApiArray[] = []
+    const singleArr: ApiArray[] = []
 
     bubbleData.response.results.map((offer, i: number) => 
         dataArr.push({Id: offer.nimda_id_number, items: [{"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toFixed(2)+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble"} ]}),
@@ -60,18 +62,17 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
                     )
                     
                 } 
-                if(promo['promo-id'] == entry.Id) {
-                    // console.log("doesnt match: "+promo['promo-id']+" != "+entry.Id)
+                else {
                     promo['splits-details'].map((split) => 
-                        dataArr.push({"Id": promo['promo-id'], items: [{"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B"}] }),
+                        singleArr.push({"Id": promo['promo-id'], items: [{"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B"}] }),
                     )
                 }
                 })
         })
     )
+    console.log(singleArr)
     return (
-        // console.log(dataArr)
-        dataArr
+        {dataArr}
     );
 
 }
