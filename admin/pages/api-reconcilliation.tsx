@@ -4,11 +4,12 @@ import useSWR from 'swr'
 import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps, ApiArray, ApiArrayItem } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
 
-const bubbleOffersUrl = process.env.CARMA_APP_OFFERS_API_URL ?? '';
+const bubbleOffersUrl = process.env.CARMA_APP_OFFERS_API_URL ?? 'i do not exist';
 const networkBOffersUrl = process.env.NETWORKB_PROMOTIONS_API_URL ?? '';
 const bubbleOffersToken = process.env.CARMA_APP_API_BEARER_TOKEN ?? '';
-const networkBOffersToken = process.env.NETWORKB_API_BEARER_TOKEN ?? '';
+const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 
+console.log(networkBOffersToken)
 
 const fetcher = (url:string) => fetch(url).then(r => r.json())
 
