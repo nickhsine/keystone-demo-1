@@ -4,8 +4,10 @@ import useSWR from 'swr'
 import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps, ApiArray, ApiArrayItem } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
 
-const bubbleOffersUrl = 'http://localhost:3030/app-offers';
-const networkBOffers = 'http://localhost:3030/promotions';
+const bubbleOffersUrl = process.env.CARMA_APP_OFFERS_API_URL ?? '';
+const networkBOffersUrl = process.env.NETWORKB_PROMOTIONS_API_URL ?? '';
+const bubbleOffersToken = process.env.CARMA_APP_OFFERS_API_URL ?? '';
+const networkBOffersToken = process.env.NETWORKB_PROMOTIONS_API_URL ?? '';
 
 const fetcher = (url:string) => fetch(url).then(r => r.json())
 
@@ -22,8 +24,8 @@ export default function BubblePromotions() {
 
 function ApiDisplay() {
 
-    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl)
-    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffers)
+    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken)
+    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffersUrl, networkBOffersToken)
 
     const combinedArray = getArrData(bubbleData, nbData)
 
@@ -76,8 +78,8 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
     );
 
 }
-const callAPI = <T,>(target: string) => {
-    const { data, error, isLoading} = useSWR<T>(target, fetcher)
+const callAPI = <T,>(target: string, token: string) => {
+    const { data, error, isLoading} = useSWR<T>([target, token], fetcher)
     
     return (
         {data, error, isLoading}

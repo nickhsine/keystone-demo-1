@@ -7,9 +7,6 @@ export function Navigation({ lists, authenticatedItem }: NavigationProps) {
         <NavigationContainer authenticatedItem={authenticatedItem}>
             <NavItem href="/">Dashboard</NavItem>
             <ListNavItems lists={lists} />
-            <NavItem href="/network-b-categories">Network B Categories</NavItem>
-            <NavItem href="/network-b-promotions">Network B Promotions</NavItem>
-            <NavItem href="/bubble-promotions">Bubble Promotions</NavItem>
             <NavItem href="/api-reconcilliation">API Reconcilliation</NavItem>
         </NavigationContainer>
     )
