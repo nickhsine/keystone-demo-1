@@ -6,8 +6,9 @@ import ApiTable from '../components/api-table';
 
 const bubbleOffersUrl = process.env.CARMA_APP_OFFERS_API_URL ?? '';
 const networkBOffersUrl = process.env.NETWORKB_PROMOTIONS_API_URL ?? '';
-const bubbleOffersToken = process.env.CARMA_APP_OFFERS_API_URL ?? '';
-const networkBOffersToken = process.env.NETWORKB_PROMOTIONS_API_URL ?? '';
+const bubbleOffersToken = process.env.CARMA_APP_API_BEARER_TOKEN ?? '';
+const networkBOffersToken = process.env.NETWORKB_API_BEARER_TOKEN ?? '';
+
 
 const fetcher = (url:string) => fetch(url).then(r => r.json())
 
@@ -80,7 +81,7 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
 }
 const callAPI = <T,>(target: string, token: string) => {
     const { data, error, isLoading} = useSWR<T>([target, token], fetcher)
-    
+    // console.log([target, token])
     return (
         {data, error, isLoading}
     )
