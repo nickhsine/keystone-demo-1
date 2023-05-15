@@ -28,7 +28,6 @@ const TableBody = (tableHeaders: TableProps) => {
         <tbody>
             {
                 tableHeaders.tableProps.map(row => {
-                  // console.log(row);
                   return (
                     <TRow {...row}></TRow>
                   )

@@ -4,12 +4,10 @@ import useSWR from 'swr'
 import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps, ApiArray, ApiArrayItem } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
 
-const bubbleOffersUrl = process.env.CARMA_APP_OFFERS_API_URL ?? 'i do not exist';
-const networkBOffersUrl = process.env.NETWORKB_PROMOTIONS_API_URL ?? '';
-const bubbleOffersToken = process.env.CARMA_APP_API_BEARER_TOKEN ?? '';
+const bubbleOffersUrl = process.env.NEXT_PUBLIC_CARMA_APP_OFFERS_API_URL ?? 'i do not exist';
+const networkBOffersUrl = process.env.NEXT_PUBLIC_NETWORKB_PROMOTIONS_API_URL ?? '';
+const bubbleOffersToken = process.env.NEXT_PUBLIC_CARMA_APP_API_BEARER_TOKEN ?? '';
 const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
-
-console.log(networkBOffersToken)
 
 const fetcher = (url:string) => fetch(url).then(r => r.json())
 
@@ -60,7 +58,6 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
             let promoExpiry: string = promo['expiry-date']
             dataArr.forEach((entry, i) => {
                 if(promo['promo-id'] == entry.Id){
-                    // console.log("matches: "+promo['promo-id']+" = "+entry.Id)
                     promo['splits-details'].map((split) => 
                         dataArr[i].items.splice(i, 0, {"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B" }),
                     )
@@ -74,7 +71,6 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
                 })
         })
     )
-    console.log(singleArr)
     return (
         {dataArr}
     );
@@ -82,7 +78,6 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
 }
 const callAPI = <T,>(target: string, token: string) => {
     const { data, error, isLoading} = useSWR<T>([target, token], fetcher)
-    // console.log([target, token])
     return (
         {data, error, isLoading}
     )
