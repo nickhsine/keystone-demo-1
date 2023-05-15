@@ -9,7 +9,13 @@ const networkBOffersUrl = process.env.NEXT_PUBLIC_NETWORKB_PROMOTIONS_API_URL ??
 const bubbleOffersToken = process.env.NEXT_PUBLIC_CARMA_APP_API_BEARER_TOKEN ?? '';
 const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 
-const fetcher = (url:string) => fetch(url).then(r => r.json())
+const fetcher = (url:string, token: string) => fetch(url, {
+    method:'GET',
+    headers:{ 
+        Authorisation: token,
+        "Content-Type" : "application/json"
+    }
+}).then(r => r.json())
 
 
 export default function BubblePromotions() {
