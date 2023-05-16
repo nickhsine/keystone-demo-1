@@ -12,9 +12,6 @@ const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 const fetcher = (url:string, token: string, method: string) => fetch(url, {
     method: method,
     headers:{ 
-        'Access-Control-Allow-Origin': "*",
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': '*',
         Authorisation: token,
         "Content-Type" : "application/json"
     },
