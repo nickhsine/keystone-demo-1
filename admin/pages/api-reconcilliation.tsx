@@ -9,9 +9,12 @@ const networkBOffersUrl = process.env.NEXT_PUBLIC_NETWORKB_PROMOTIONS_API_URL ??
 const bubbleOffersToken = process.env.NEXT_PUBLIC_CARMA_APP_API_BEARER_TOKEN ?? '';
 const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 
-const fetcher = (url:string, token: string) => fetch(url, {
-    method:'GET',
+const fetcher = (url:string, token: string, method: string) => fetch(url, {
+    method: method,
     headers:{ 
+        'Access-Control-Allow-Origin': "*",
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': '*',
         Authorisation: token,
         "Content-Type" : "application/json"
     }
@@ -30,8 +33,8 @@ export default function BubblePromotions() {
 
 function ApiDisplay() {
 
-    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken)
-    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffersUrl, networkBOffersToken)
+    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken, "GET")
+    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffersUrl, networkBOffersToken, "POST")
 
     const combinedArray = getArrData(bubbleData, nbData)
 
@@ -82,7 +85,7 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
     );
 
 }
-const callAPI = <T,>(target: string, token: string) => {
+const callAPI = <T,>(target: string, token: string, method: string) => {
     const { data, error, isLoading} = useSWR<T>([target, token], fetcher)
     return (
         {data, error, isLoading}
