@@ -12,9 +12,9 @@ const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 const fetcher = (url:string, token: string, method: string) => fetch(url, {
     method: method,
     headers:{ 
-        Authorisation: token,
         "Content-Type" : "application/json"
     },
+    body: token,
     redirect: 'follow'
 }).then(r => r.json())
 
