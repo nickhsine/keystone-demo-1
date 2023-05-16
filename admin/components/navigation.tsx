@@ -8,6 +8,7 @@ export function Navigation({ lists, authenticatedItem }: NavigationProps) {
             <NavItem href="/">Dashboard</NavItem>
             <ListNavItems lists={lists} />
             <NavItem href="/bubble-test">Bubble</NavItem>
+            <NavItem href="/nb-test">NB</NavItem>
             <NavItem href="/api-reconcilliation">API Reconcilliation</NavItem>
         </NavigationContainer>
     )
