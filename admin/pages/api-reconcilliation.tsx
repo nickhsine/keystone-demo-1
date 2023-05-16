@@ -74,7 +74,6 @@ const getArrData = (bubbleData: AppResponse | void | undefined, nbData:  Promoti
 const callAPI = (target: string, token: string, method: string) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", token);
-    console.log(token)
 
     const requestOptions: RequestInit = {
         method: method,
@@ -96,15 +95,3 @@ const callAPI = (target: string, token: string, method: string) => {
         )
     });
 }
-
-// const ErrorOrLoading = (error: any, isResponseData: boolean) => {
-//     if (error[0] != undefined) return (
-//         <div>{error}</div>
-//     )
-//     if (isResponseData == false) return (
-//         <div>Failed to load</div>
-//     )
-//     return (
-//         null
-//     )
-// }

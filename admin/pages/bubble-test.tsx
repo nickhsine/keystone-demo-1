@@ -32,14 +32,16 @@ const callAPI = (target: string, token: string, method: string) => {
         )
     });
 }
-
+    const bubbleData = callAPI(bubbleOffersUrl, bubbleOffersToken, "GET")
+    //REVERT AFTER
+    const nbData = callAPI(networkBOffersUrl, networkBOffersToken, "Get")
     const getArrData = (bubbleData: AppResponse | void | undefined, nbData:  Promotion[] | void | undefined) => {
         if (!bubbleData || !nbData) {
             return null;
         }
         const dataArr: ApiArray[] = []
         const singleArr: ApiArray[] = []
-        console.log(bubbleData)
+        console.log(nbData)
         // bubbleData.response.results.map((offer, i: number) => 
         //     dataArr.push({Id: offer.nimda_id_number, items: [{"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toFixed(2)+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble"} ]}),
         // )
@@ -66,10 +68,6 @@ const callAPI = (target: string, token: string, method: string) => {
         );
     
     }
-
-    const bubbleData = callAPI(bubbleOffersUrl, bubbleOffersToken, "GET")
-    //REVERT AFTER
-    const nbData = callAPI(bubbleOffersUrl, bubbleOffersToken, "Get")
 
     const combinedArray = getArrData(bubbleData, nbData)
 
