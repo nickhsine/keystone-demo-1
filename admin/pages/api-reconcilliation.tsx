@@ -58,27 +58,27 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
     const dataArr: ApiArray[] = []
     const singleArr: ApiArray[] = []
 
-    // bubbleData.response.results.map((offer, i: number) => 
-    //     dataArr.push({Id: offer.nimda_id_number, items: [{"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toFixed(2)+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble"} ]}),
-    // )
-    nbData.map((set, j) => 
-        set["promo-data"].map((promo, i: number) => {
-            let promoExpiry: string = promo['expiry-date']
-            // dataArr.forEach((entry, i) => {
-            //     if(promo['promo-id'] == entry.Id){
-            //         promo['splits-details'].map((split) => 
-            //             dataArr[i].items.splice(i, 0, {"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B" }),
-            //         )
-                    
-            //     } 
-            //     else {
-                    promo['splits-details'].map((split) => 
-                        singleArr.push({"Id": promo['promo-id'], items: [{"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B"}] }),
-                    )
-        //         }
-        //         })
-        })
+    bubbleData.response.results.map((offer, i: number) => 
+        dataArr.push({Id: offer.nimda_id_number, items: [{"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toFixed(2)+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble"} ]}),
     )
+    // nbData.map((set, j) => 
+    //     set["promo-data"].map((promo, i: number) => {
+    //         let promoExpiry: string = promo['expiry-date']
+    //         dataArr.forEach((entry, i) => {
+    //             if(promo['promo-id'] == entry.Id){
+    //                 promo['splits-details'].map((split) => 
+    //                     dataArr[i].items.splice(i, 0, {"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B" }),
+    //                 )
+                    
+    //             } 
+    //             else {
+    //                 promo['splits-details'].map((split) => 
+    //                     singleArr.push({"Id": promo['promo-id'], items: [{"Name": promo.name, "Discount": split['gross-commission'].replace("&pound;", "£"), "Expires": promoExpiry, Source: "Network B"}] }),
+    //                 )
+    //             }
+    //             })
+    //     })
+    // )
     return (
         {dataArr}
     );
