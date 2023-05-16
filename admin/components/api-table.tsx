@@ -27,9 +27,9 @@ const TableBody = (tableHeaders: TableProps) => {
     const tBody = (
         <tbody>
             {
-                tableHeaders.tableProps.map(row => {
+                tableHeaders.tableProps.map((row, i: number) => {
                   return (
-                    <TRow {...row}></TRow>
+                    <TRow key={"trow "+i} {...row}></TRow>
                   )
                   }
                 )
@@ -54,9 +54,9 @@ const TRow = (tableRow: ApiArray) => {
     const tableRowOutput = 
         <>
           {
-            tableRow.items.map((item, i) => {
+            tableRow.items.map((item, i: number) => {
               return (
-                <tr className={isDiscountMatch? styles.matched: styles.unmatched} key={i}>
+                <tr className={isDiscountMatch? styles.matched: styles.unmatched} key={"row "+i}>
                     {i == 0?<td rowSpan={tableRow.items.length}>{tableRow.Id}</td> : null}
                     <td className={styles.textLeft}>{item.Name}</td>
                     <td>{item.Discount}</td>
