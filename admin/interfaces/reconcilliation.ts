@@ -27,7 +27,7 @@ export interface PromoSplitDetails {
 }
 
 export interface AppResponse {
-    response: AppResults
+    result: AppResults
 }
 
 export interface AppResults {

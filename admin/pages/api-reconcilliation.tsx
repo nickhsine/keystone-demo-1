@@ -5,18 +5,10 @@ import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCateg
 import ApiTable from '../components/api-table';
 
 const bubbleOffersUrl = process.env.NEXT_PUBLIC_CARMA_APP_OFFERS_API_URL ?? 'i do not exist';
-const networkBOffersUrl = process.env.NEXT_PUBLIC_NETWORKB_PROMOTIONS_API_URL ?? '';
 const bubbleOffersToken = process.env.NEXT_PUBLIC_CARMA_APP_API_BEARER_TOKEN ?? '';
+const networkBOffersUrl = process.env.NEXT_PUBLIC_NETWORKB_PROMOTIONS_API_URL ?? '';
 const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 
-const fetcher = (url:string, token: string, method: string) => fetch(url, {
-    method: method,
-    headers:{ 
-        "Content-Type" : "application/json"
-    },
-    body: token,
-    redirect: 'follow'
-}).then(r => r.json())
 
 
 export default function BubblePromotions() {
@@ -31,27 +23,22 @@ export default function BubblePromotions() {
 
 function ApiDisplay() {
 
-    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken, "GET")
+    const bubbleData = callAPI(bubbleOffersUrl, bubbleOffersToken, "GET")
     //REVERT AFTER
-    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(bubbleOffersUrl, bubbleOffersToken, "Get")
+    const nbData = callAPI(networkBOffersUrl, networkBOffersToken, "POST")
 
     const combinedArray = getArrData(bubbleData, nbData)
 
 
     return (
         <>
-        <ErrorOrLoading
-            error = {bubbleError || nBError}
-            isLoading = {bubbleIsLoading || nBIsLoading}
-            isResponseData = {bubbleData || nbData}
-        />
         {combinedArray && <ApiTable tableProps={combinedArray.dataArr}></ApiTable>}
         {/* {combinedArray && <ApiTable tableProps={combinedArray.singleArr}></ApiTable>} */}
         </>
     )
 }
 
-const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promotion[] | null | undefined) => {
+const getArrData = (bubbleData: AppResponse | void | undefined, nbData:  Promotion[] | void | undefined) => {
     if (!bubbleData || !nbData) {
         return null;
     }
@@ -84,24 +71,40 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
     );
 
 }
-const callAPI = <T,>(target: string, token: string, method: string) => {
-    const { data, error, isLoading} = useSWR<T>([target, token], fetcher)
-    return (
-        {data, error, isLoading}
-    )
+const callAPI = (target: string, token: string, method: string) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", token);
+    console.log(token)
+
+    const requestOptions: RequestInit = {
+        method: method,
+        headers: myHeaders,
+        redirect: 'follow',
+    };
+
+    fetch(target, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+        return (
+            console.log(result),
+            result
+        )
+    })
+    .catch(error => {
+        return (
+            error
+        )
+    });
 }
 
-const ErrorOrLoading = (error: any, isLoading: boolean, isResponseData: boolean) => {
-    if (error[0] != undefined) return (
-        <div>Error</div>
-    )
-    if (isLoading == true) return (
-        <div>Loading...</div>
-    )
-    if (isResponseData == false) return (
-        <div>Failed to load</div>
-    )
-    return (
-        null
-    )
-}
+// const ErrorOrLoading = (error: any, isResponseData: boolean) => {
+//     if (error[0] != undefined) return (
+//         <div>{error}</div>
+//     )
+//     if (isResponseData == false) return (
+//         <div>Failed to load</div>
+//     )
+//     return (
+//         null
+//     )
+// }
