@@ -13,12 +13,16 @@ const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 
 interface RequestParams {
     target: string
-    token: string,
+    token: string | null
     method: string
+    paginate: boolean
 }
 
-const fetcher = async ({target: url, token, method} :RequestParams) => {
+const fetcher = async ({target: url, token, method, paginate} :RequestParams) => {
 
+    const pageCount: number  = 100;
+    const noOfPages = 0
+    const cursor = 0
     const requestHeaders = new Headers();
     
     if (token) {
@@ -58,8 +62,8 @@ export default function BubblePromotions() {
 
 function ApiDisplay() {
 
-    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken, "GET")
-    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffersUrl, null, "GET")
+    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken, "GET", true)
+    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffersUrl, null, "GET", false)
 
     const combinedArray = getArrData(bubbleData, nbData)
 
@@ -113,8 +117,8 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
     );
 
 }
-const callAPI = <T,>(target: string, token: string | null, method: string) => {
-    const { data, error, isLoading} = useSWR<T>({target, token, method}, fetcher)
+const callAPI = <T,>(target: string, token: string | null, method: string, paginate: boolean) => {
+    const { data, error, isLoading} = useSWR<T>({target, token, method, paginate}, fetcher)
     return (
         {data, error, isLoading}
     )
