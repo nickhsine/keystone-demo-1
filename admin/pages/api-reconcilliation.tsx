@@ -17,7 +17,8 @@ const fetcher = (url:string, token: string, method: string) => fetch(url, {
         'Access-Control-Allow-Methods': '*',
         Authorisation: token,
         "Content-Type" : "application/json"
-    }
+    },
+    redirect: 'follow'
 }).then(r => r.json())
 
 
@@ -34,7 +35,8 @@ export default function BubblePromotions() {
 function ApiDisplay() {
 
     const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken, "GET")
-    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffersUrl, networkBOffersToken, "POST")
+    //REVERT AFTER
+    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(bubbleOffersUrl, bubbleOffersToken, "Get")
 
     const combinedArray = getArrData(bubbleData, nbData)
 
