@@ -18,7 +18,6 @@ var requestOptions: RequestInit = {
   method: 'POST',
   headers: myHeaders,
   redirect: 'follow',
-//   mode: 'no-cors'
 };
 
 fetch("https://api.networkb.co.uk/v1/promotions", requestOptions)
