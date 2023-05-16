@@ -6,17 +6,18 @@ import ApiTable from '../components/api-table';
 import {useMemo} from "react";
 
 const bubbleOffersUrl = process.env.NEXT_PUBLIC_CARMA_APP_OFFERS_API_URL ?? 'i do not exist';
-const networkBOffersUrl = "https://localhost:3030/promotions" ?? '';
+const networkBOffersUrl = "http://localhost:3030/promotions" ?? '';
 const bubbleOffersToken = process.env.NEXT_PUBLIC_CARMA_APP_API_BEARER_TOKEN ?? '';
 const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 
 
 interface RequestParams {
+    target: string
     token: string,
     method: string
 }
 
-const fetcher = ({target: url, token, method} :{target: string, token: string, method: string}) => {
+const fetcher = async ({target: url, token, method} :RequestParams) => {
 
     const requestHeaders = new Headers();
     
@@ -28,13 +29,18 @@ const fetcher = ({target: url, token, method} :{target: string, token: string, m
         method: method,
         headers: requestHeaders,
         redirect: 'follow'
-      };
+    };
 
-
+    const apiResonse = await fetch(url, requestOptions)
     
+    if (!apiResonse.ok) {
+        const error = new Error('An error occurred while fetching the data.')
+        // Attach extra info to the error object.
+        throw error
+      }
+
     return (
-        fetch(url, requestOptions).
-        then(r => r.json())
+        apiResonse.json()
     )
 }
 
@@ -58,6 +64,7 @@ function ApiDisplay() {
     const combinedArray = getArrData(bubbleData, nbData)
 
     console.log("data", bubbleData?.response.results)
+    console.log("NB", nbData)
 
 
     return (
@@ -115,8 +122,8 @@ const callAPI = <T,>(target: string, token: string | null, method: string) => {
 }
 
 const ErrorOrLoading = (error: any, isLoading: boolean, isResponseData: boolean) => {
-    if (error[0] != undefined) return (
-        <div>Error</div>
+    if (error != undefined) return (
+        <div>{error.message}</div>
     )
     if (isLoading == true) return (
         <div>Loading...</div>
