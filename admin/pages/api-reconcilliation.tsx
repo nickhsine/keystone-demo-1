@@ -57,10 +57,10 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
     }
     const dataArr: ApiArray[] = []
     const singleArr: ApiArray[] = []
-
-    bubbleData.response.results.map((offer, i: number) => 
-        dataArr.push({Id: offer.nimda_id_number, items: [{"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toFixed(2)+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble"} ]}),
-    )
+    console.log(bubbleData)
+    // bubbleData.response.results.map((offer, i: number) => 
+    //     dataArr.push({Id: offer.nimda_id_number, items: [{"Name": offer.name_text, "Discount": offer.discount_percentage_number ? offer.discount_percentage_number.toFixed(2)+"%" : "£"+offer.discount_amount_number, "Expires": offer.expiry_date_date.split('T')[0], Source: "Bubble"} ]}),
+    // )
     // nbData.map((set, j) => 
     //     set["promo-data"].map((promo, i: number) => {
     //         let promoExpiry: string = promo['expiry-date']
