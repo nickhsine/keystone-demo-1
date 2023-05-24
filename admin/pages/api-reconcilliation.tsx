@@ -3,7 +3,8 @@ import { Heading } from '@keystone-ui/core';
 import useSWR from 'swr'
 import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps, ApiArray, ApiArrayItem } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
-import {useMemo} from "react";
+import { useEffect, useState } from 'react';
+
 
 const bubbleOffersUrl = process.env.NEXT_PUBLIC_CARMA_APP_OFFERS_API_URL ?? 'i do not exist';
 const networkBOffersUrl = "http://localhost:3030/promotions" ?? '';
@@ -19,36 +20,24 @@ interface RequestParams {
 }
 
 const fetcher = async ({target: url, token, method, paginate} :RequestParams) => {
-
-    const pageCount: number  = 100;
-    const noOfPages = 0
-    const cursor = 0
     const requestHeaders = new Headers();
-    
     if (token) {
+        console.log("token applied")
         requestHeaders.append("Authorization", token) 
     }
 
     const requestOptions: RequestInit = {
         method: method,
         headers: requestHeaders,
-        redirect: 'follow'
+        redirect: 'follow',
     };
 
-    const apiResonse = await fetch(url, requestOptions)
-    
-    if (!apiResonse.ok) {
-        const error = new Error('An error occurred while fetching the data.')
-        // Attach extra info to the error object.
-        throw error
-      }
+    return(
 
-    return (
-        apiResonse.json()
+    fetch(url, requestOptions
+  ).then((res) => res.json())
     )
 }
-
-
 
 export default function BubblePromotions() {
     return (
@@ -118,10 +107,36 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
 
 }
 const callAPI = <T,>(target: string, token: string | null, method: string, paginate: boolean) => {
-    const { data, error, isLoading} = useSWR<T>({target, token, method, paginate}, fetcher)
-    return (
-        {data, error, isLoading}
-    )
+    if(paginate){
+        console.log("Paginate, "+target)
+        const [allData, setAllData] = useState<AppResponse[]>([]);
+        const [nextCursor, setNextCursor] = useState<string | null>(null);
+        const { data, error, isLoading} = useSWR(nextCursor
+            ? [`${target}?cursor=${nextCursor}`, method, token]
+            : null,
+          fetcher)
+
+        useEffect(() => {
+            if (data) {
+                console.log("if data");
+              setAllData((prevData) => [...prevData, ...data.data]);
+              setNextCursor(data.nextCursor);
+            }
+          }, [data]);
+        console.log("data: "+data)
+        return (
+            {data, error, isLoading}
+        )
+
+
+
+
+    } else {
+        const { data, error, isLoading} = useSWR<T>({target, token, method, paginate}, fetcher)
+        return (
+            {data, error, isLoading}
+        )
+    }
     
 }
 
