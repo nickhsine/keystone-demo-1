@@ -9,8 +9,8 @@ export function Navigation({ lists, authenticatedItem }: NavigationProps) {
             <ListNavItems lists={lists} />
             <NavItem href="/bubble-test">Bubble</NavItem>
             <NavItem href="/nb-test">NB</NavItem>
-            <NavItem href="/api-reconcilliation">API Reconcilliation</NavItem>
-            <NavItem href="/api-gpt">API gpt</NavItem>
+            {/* <NavItem href="/api-reconcilliation">API Reconcilliation</NavItem> */}
+            <NavItem href="/api-gpt">API Reconcilliation</NavItem>
         </NavigationContainer>
     )
 }
