@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 
 const bubbleOffersUrl = process.env.NEXT_PUBLIC_CARMA_APP_OFFERS_API_URL ?? 'i do not exist';
-const networkBOffersUrl = "http://localhost:3030/promotions" ?? '';
+const networkBOffersUrl = process.env.NEXT_PUBLIC_NETWORKB_PROMOTIONS_API_URL ?? '';
 const bubbleOffersToken = process.env.NEXT_PUBLIC_CARMA_APP_API_BEARER_TOKEN ?? '';
 const networkBOffersToken = process.env.NEXT_PUBLIC_NETWORKB_BEARER_TOKEN ?? '';
 
@@ -22,15 +22,20 @@ interface RequestParams {
     paginate: boolean
 }
 
-// const fetcher = async ({target: url, token, method, paginate} :RequestParams) => 
-//     fetch(url, {
-//     method: method,
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   }).then((res) => res.json());
+const netBFetcher = async (params: RequestParams) => {
+    console.log("url: ",params.target)
+    fetch(params.target, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${params.token}`,
+    },
+  }).then((res) => res.text()).catch((error) => {
+    console.log(error.message)
+  }
+)
+}
 
-const fetcher = (url: string, method: string, token: string) =>{
+const bubbleFetcher = (url: string, method: string, token: string) =>{
     console.log(url)
     const requestHeaders = new Headers();
     if (token) {
@@ -48,7 +53,18 @@ const fetcher = (url: string, method: string, token: string) =>{
 
     fetch(url, requestOptions
     ).then((res) => res.json())
-    )
+    .catch((error) => {
+        console.log(error.message)
+      }
+    ))
+}
+
+function TriggerAPIButton({children}: any) {
+    return (
+        <button>
+            {children}
+        </button>
+    );
 }
 
 
@@ -56,6 +72,7 @@ export default function BubblePromotions() {
     return (
         <>
             <PageContainer header={<Heading type="h3">API Reconcilliation</Heading>}>
+                {/* <TriggerAPIButton></TriggerAPIButton> */}
                 <ApiDisplay></ApiDisplay>
             </PageContainer>
         </>
@@ -63,9 +80,11 @@ export default function BubblePromotions() {
 }
 
 function ApiDisplay() {
-
-    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken, "GET", true)
-    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffersUrl, null, "GET", false)
+    const [shouldFetchBubble,setShouldFetchBubble] = useState<boolean>(false)
+    const [shouldFetchNetB,setShouldFetchNetB] = useState<boolean>(false)
+    
+    const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callBubbleAPI(bubbleOffersUrl, bubbleOffersToken, "GET", true, shouldFetchBubble)
+    const {data: nbData, error: nBError, isLoading: nBIsLoading} = callNetBAPI(networkBOffersUrl, null, "GET", false, shouldFetchNetB)
     // const combinedArray = getArrData(bubbleData, nbData)
 
     console.log("Bubble", bubbleData)
@@ -79,6 +98,12 @@ function ApiDisplay() {
             isLoading = {bubbleIsLoading || nBIsLoading}
             isResponseData = {bubbleData || nbData}
         />
+        <button onClick={() => setShouldFetchBubble(true)}>
+            Fetch Bubble
+        </button>
+        <button onClick={() => setShouldFetchNetB(true)}>
+            Network B
+        </button>
         {/* {combinedArray && <ApiTable tableProps={combinedArray.dataArr}></ApiTable>} */}
         {/* {combinedArray && <ApiTable tableProps={combinedArray.singleArr}></ApiTable>} */}
         </>
@@ -118,42 +143,41 @@ function ApiDisplay() {
 //     );
 
 // }
-const callAPI = <T,>(target: string, token: string | null, method: string, paginate: boolean) => {
-    if(paginate){
-        const [allData, setAllData] = useState<AppResponse[]>([]);
-        const [nextCursor, setNextCursor] = useState<string>("0");
-        const { data, error } = useSWR<AppResults>(
-            nextCursor
-            ? [`${target}?cursor=${nextCursor}`, method, token]
-            : null,
-            fetcher
-            );
-            console.log("Paginate, "+target+", "+nextCursor)
-        
-          useEffect(() => {
-            if (data) {
-                console.log(data)
-              setAllData((prevData) => [...prevData, ...data.response.results]);
-              let cursorPos = (parseInt(nextCursor)+1).toString()
-              setNextCursor(cursorPos);
-            }
-          }, [data]);
-        
-          const isLoading = !data && !error;
-        
-          return {
-            data: allData,
-            error,
-            isLoading,
-          };
+function callBubbleAPI(target: string, token: string | null, method: string, paginate: boolean, shouldFetchBubble: boolean){
+    const [allData, setAllData] = useState<AppResponse[]>([]);
+    const [nextCursor, setNextCursor] = useState<string>("0");
+    const { data, error } = useSWR<AppResults>(shouldFetchBubble?
+        (nextCursor
+        ? [`${target}?cursor=${nextCursor}`, method, token]
+        : null): null,
+        bubbleFetcher
+    );
+    console.log("Paginate, "+target+", "+nextCursor)
 
-    } else {
-        const { data, error, isLoading} = useSWR<T>([target, token, method, paginate], fetcher)
+    useEffect(() => {
+    if (data) {
+        console.log(data)
+        setAllData((prevData) => [...prevData, ...data.response.results]);
+        let cursorPos = (parseInt(nextCursor)+1).toString()
+        setNextCursor(cursorPos);
+    }
+    }, [data]);
+
+    const isLoading = !data && !error;
+
+    return {
+    data: allData,
+    error,
+    isLoading,
+    };
+}
+
+function callNetBAPI(target: string, token: string | null, method: string, paginate: boolean, shouldFetchNetB: boolean){
+
+    const { data, error, isLoading} = useSWR(shouldFetchNetB?{target, token}:null, netBFetcher)
         return (
             {data, error, isLoading}
         )
-    }
-    
 }
 
 const ErrorOrLoading = (error: any, isLoading: boolean, isResponseData: boolean) => {
