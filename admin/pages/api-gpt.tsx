@@ -25,7 +25,7 @@ interface RequestParams {
 const netBFetcher = async (params: RequestParams) => {
     console.log("url: ",params.target)
     fetch(params.target, {
-    method: "GET",
+    method: "POST",
     headers: {
       Authorization: `Bearer ${params.token}`,
     },
