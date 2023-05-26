@@ -29,7 +29,7 @@ const netBFetcher = async (params: RequestParams) => {
     headers: {
       Authorization: `Bearer ${params.token}`,
     },
-  }).then((res) => res.text()).catch((error) => {
+  }).then((res) => {res.headers.forEach(console.log);res.text()}).catch((error) => {
     console.log(error.message)
   }
 )
