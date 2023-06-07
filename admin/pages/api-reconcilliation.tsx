@@ -4,10 +4,10 @@ import useSWR from 'swr'
 import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps, ApiArray, ApiArrayItem, TempAppOffer } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
 import { useEffect, useState } from 'react';
-import bubbleData from "./json/app-offers2.json";
-import nbData from "./json/nb-promotions.json";
+import bubbleData from "./json/bubble.json";
+import nbData from "./json/networkb.json";
 
-export default function BubblePromotions() {
+export default function ApiReconciliation() {
     return (
         <>
             <PageContainer header={<Heading type="h3">API Reconcilliation</Heading>}>
