@@ -188,6 +188,17 @@ var keystone_default = withAuth(
       url: "file:./keystone.db"
     },
     lists,
-    session
+    session,
+    storage: {
+      files: {
+        kind: "local",
+        type: "file",
+        generateUrl: (path) => `/files${path}`,
+        serverRoute: {
+          path: "/files"
+        },
+        storagePath: "public/files"
+      }
+    }
   })
 );

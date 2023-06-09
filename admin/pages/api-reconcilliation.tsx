@@ -4,8 +4,8 @@ import useSWR from 'swr'
 import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps, ApiArray, ApiArrayItem, TempAppOffer } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
 import { useEffect, useState } from 'react';
-import bubbleData from "./json/bubble.json";
-import nbData from "./json/networkb.json";
+import bubbleData from "../public/files/json/bubble.json";
+import nbData from "../public/files/json/networkb.json";
 
 export default function ApiReconciliation() {
     return (

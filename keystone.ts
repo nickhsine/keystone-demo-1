@@ -14,16 +14,29 @@ import { lists } from './schema';
 // when you write your list-level access control functions, as they typically rely on session data
 import { withAuth, session } from './auth';
 import dotenv from "dotenv"
+import type { StorageConfig } from '@keystone-6/core/types'
+
 
 dotenv.config();
 
 export default withAuth(
-  config({
-    db: {
-      provider: 'sqlite',
-      url: 'file:./keystone.db',
-    },
-    lists,
-    session,
-  })
+    config({
+        db: {
+        provider: 'sqlite',
+        url: 'file:./keystone.db',
+        },
+        lists,
+        session,
+        storage: {
+            files: {
+                kind: 'local',
+                type: 'file',
+                generateUrl: path => `/files${path}`,
+                serverRoute: {
+                path: '/files',
+                },
+                storagePath: 'public/files',
+            },
+        },
+    })
 );

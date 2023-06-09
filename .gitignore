@@ -4,4 +4,3 @@ keystone.db
 *.log
 /fake-apis/*
 .env
-.env
