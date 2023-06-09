@@ -142,6 +142,14 @@ var lists = {
       // this can be helpful to find out all the Posts associated with a Tag
       posts: (0, import_fields.relationship)({ ref: "Post.tags", many: true })
     }
+  }),
+  Uploader: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      jsonUpload: (0, import_fields.file)({
+        storage: "files"
+      })
+    }
   })
 };
 

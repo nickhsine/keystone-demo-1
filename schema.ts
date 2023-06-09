@@ -16,6 +16,7 @@ import {
   password,
   timestamp,
   select,
+  file,
 } from '@keystone-6/core/fields';
 
 // the document field is a more complicated field, so it has it's own package
@@ -145,5 +146,13 @@ export const lists: Lists = {
       // this can be helpful to find out all the Posts associated with a Tag
       posts: relationship({ ref: 'Post.tags', many: true }),
     },
+  }),
+  Uploader: list({
+    access: allowAll,
+    fields: {
+      jsonUpload: file({
+        storage: 'files',
+      })
+    } 
   }),
 };

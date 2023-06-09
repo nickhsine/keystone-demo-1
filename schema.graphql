@@ -254,6 +254,52 @@ input TagCreateInput {
   posts: PostRelateToManyForCreateInput
 }
 
+type Uploader {
+  id: ID!
+  jsonUpload: FileFieldOutput
+}
+
+type FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  url: String!
+}
+
+input UploaderWhereUniqueInput {
+  id: ID
+}
+
+input UploaderWhereInput {
+  AND: [UploaderWhereInput!]
+  OR: [UploaderWhereInput!]
+  NOT: [UploaderWhereInput!]
+  id: IDFilter
+}
+
+input UploaderOrderByInput {
+  id: OrderDirection
+}
+
+input UploaderUpdateInput {
+  jsonUpload: FileFieldInput
+}
+
+input FileFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input UploaderUpdateArgs {
+  where: UploaderWhereUniqueInput!
+  data: UploaderUpdateInput!
+}
+
+input UploaderCreateInput {
+  jsonUpload: FileFieldInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -278,6 +324,12 @@ type Mutation {
   updateTags(data: [TagUpdateArgs!]!): [Tag]
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
+  createUploader(data: UploaderCreateInput!): Uploader
+  createUploaders(data: [UploaderCreateInput!]!): [Uploader]
+  updateUploader(where: UploaderWhereUniqueInput!, data: UploaderUpdateInput!): Uploader
+  updateUploaders(data: [UploaderUpdateArgs!]!): [Uploader]
+  deleteUploader(where: UploaderWhereUniqueInput!): Uploader
+  deleteUploaders(where: [UploaderWhereUniqueInput!]!): [Uploader]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -310,6 +362,9 @@ type Query {
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
+  uploaders(where: UploaderWhereInput! = {}, orderBy: [UploaderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UploaderWhereUniqueInput): [Uploader!]
+  uploader(where: UploaderWhereUniqueInput!): Uploader
+  uploadersCount(where: UploaderWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
